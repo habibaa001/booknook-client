@@ -19,7 +19,7 @@ interface Book {
 
 export default function HomePage() {
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     document.title = "BookNook | Home";
