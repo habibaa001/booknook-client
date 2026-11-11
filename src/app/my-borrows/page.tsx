@@ -27,11 +27,11 @@ export default function MyBorrowsPage() {
       return;
     }
     if (session?.user?.email) {
-      const token = localStorage.getItem("booknook_token");
-      axios.get<BorrowRecord[]>(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/borrows?email=${session.user.email}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
+      axios
+        .get<BorrowRecord[]>(
+          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/borrows?email=${session.user.email}`,
+          { withCredentials: true },
+        )
         .then((res) => setBorrows(res.data))
         .catch(() => toast.error("Failed to fetch borrows"))
         .finally(() => setLoading(false));
@@ -39,11 +39,10 @@ export default function MyBorrowsPage() {
   }, [session, isPending, router]);
 
   const handleReturn = async (borrowId: string) => {
-    const token = localStorage.getItem("booknook_token");
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/borrows/${borrowId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/borrows/${borrowId}`,
+        { withCredentials: true },
       );
       toast.success("Book returned successfully!");
       setBorrows(borrows.filter((b) => b._id !== borrowId));
@@ -63,8 +62,12 @@ export default function MyBorrowsPage() {
   return (
     <div className="bg-[#0f1713] min-h-screen py-16 px-6 text-gray-200">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-serif font-bold text-white mb-2">My Borrows</h1>
-        <p className="text-gray-400 text-sm mb-8">Manage the books you have borrowed</p>
+        <h1 className="text-3xl font-serif font-bold text-white mb-2">
+          My Borrows
+        </h1>
+        <p className="text-gray-400 text-sm mb-8">
+          Manage the books you have borrowed
+        </p>
 
         {borrows.length === 0 ? (
           <p className="text-gray-400">You have no borrowed books right now.</p>
@@ -81,13 +84,26 @@ export default function MyBorrowsPage() {
               </thead>
               <tbody>
                 {borrows.map((b) => (
-                  <tr key={b._id} className="border-b border-[#23382e] hover:bg-[#15221c]/60">
+                  <tr
+                    key={b._id}
+                    className="border-b border-[#23382e] hover:bg-[#15221c]/60"
+                  >
                     <td className="p-4 flex items-center gap-3">
-                      <img src={b.bookImage} alt={b.bookTitle} className="w-12 h-16 object-cover rounded" />
-                      <span className="font-semibold text-white text-sm">{b.bookTitle}</span>
+                      <img
+                        src={b.bookImage}
+                        alt={b.bookTitle}
+                        className="w-12 h-16 object-cover rounded"
+                      />
+                      <span className="font-semibold text-white text-sm">
+                        {b.bookTitle}
+                      </span>
                     </td>
-                    <td className="p-4 text-xs text-gray-300">{b.borrowDate}</td>
-                    <td className="p-4 text-xs text-[#64b587]">{b.returnDate}</td>
+                    <td className="p-4 text-xs text-gray-300">
+                      {b.borrowDate}
+                    </td>
+                    <td className="p-4 text-xs text-[#64b587]">
+                      {b.returnDate}
+                    </td>
                     <td className="p-4 text-right">
                       <button
                         type="button"
