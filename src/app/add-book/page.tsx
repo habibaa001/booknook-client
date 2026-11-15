@@ -64,7 +64,7 @@ export default function AddBookPage() {
           userName: session?.user.name,
           userEmail: session?.user.email,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { withCredentials: true }
       );
 
       toast.success("Book added successfully!");
